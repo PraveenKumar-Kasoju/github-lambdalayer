@@ -5,8 +5,10 @@ phases:
     runtime-versions:
       python: 3.8
     commands:
+      - echo "Setting up python directory"
+      - mkdir -p python/lib/python3.8/site-packages
       - echo "Installing dependencies"
-      - pip install -r requirements.txt -t python
+      - pip install -r requirements.txt -t python/lib/python3.8/site-packages/
 
   pre_build:
     commands:
