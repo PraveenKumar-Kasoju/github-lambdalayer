@@ -1,5 +1,4 @@
 version: 0.2
-
 phases:
   install:
     runtime-versions:
@@ -13,7 +12,9 @@ phases:
   pre_build:
     commands:
       - echo "Zipping the dependencies for Lambda layer"
-      - zip -r layer.zip python
+      - cd python/lib/python3.8/site-packages/
+      - zip -r ../../../../../layer.zip .
+      - cd -
 
   build:
     commands:
