@@ -5,8 +5,10 @@ phases:
     runtime-versions:
       python: 3.8
     commands:
+      - echo "Setting up python directory"
+      - mkdir -p python/lib/python3.8/site-packages
       - echo "Installing dependencies"
-      - pip install -r requirements.txt -t python
+      - pip install -r requirements.txt -t python/lib/python3.8/site-packages/
 
   pre_build:
     commands:
@@ -21,7 +23,7 @@ phases:
   post_build:
     commands:
       - echo "Deploying the Lambda layer"
-      - aws lambda publish-layer-version --layer-name my-layer --zip-file fileb://layer.zip --compatible-runtimes python3.12
+      - aws lambda publish-layer-version --layer-name my-layer --zip-file fileb://layer.zip --compatible-runtimes python3.8
       - LAYER_VERSION=$(aws lambda list-layer-versions --layer-name my-layer --query 'LayerVersions[0].Version' --output text)
       - echo "Deploying the Lambda function"
       - aws lambda update-function-code --function-name github-to-lambda-demo --zip-file fileb://lambda_function.zip
