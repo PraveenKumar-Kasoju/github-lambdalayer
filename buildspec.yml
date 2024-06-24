@@ -9,6 +9,8 @@ phases:
   pre_build:
     commands:
       - "echo Preparing to build"
+      - "ls -al"
+      - "ls -al Lambdafunction"
       - "cd Lambdafunction/layer"
       - "pip install -r requirements.txt -t python/"
       - "cd ../.."
