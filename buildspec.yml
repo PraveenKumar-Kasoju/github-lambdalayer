@@ -9,24 +9,25 @@ phases:
   pre_build:
     commands:
       - "echo Preparing to build"
-      - "cd layer"
+      - "cd Lambdafunction/layer"
       - "pip install -r requirements.txt -t python/"
-      - "cd .."
-      - "zip -r layer.zip layer/python"
-      - "cd function"
+      - "cd ../.."
+      - "zip -r layer.zip Lambdafunction/layer/python"
+      - "cd Lambdafunction"
       - "pip install -r requirements.txt -t ."
       - "zip -r function.zip ."
+      - "cd .."
   build:
     commands:
       - "echo Building the Lambda layer"
-      - "aws s3 cp ../layer.zip s3://github-lambda-layer/layer.zip"
+      - "aws s3 cp layer.zip s3://github-lambda-layer/layer.zip"
       - "aws lambda publish-layer-version --layer-name my-layer --content S3Bucket=github-lambda-layer,S3Key=layer.zip --compatible-runtimes python3.8"
       - "LAYER_VERSION=$(aws lambda list-layer-versions --layer-name my-layer --query 'LayerVersions[0].Version' --output text)"
       - "echo Layer version: $LAYER_VERSION"
-      - "aws s3 cp ../function.zip s3://github-lambda-layer/function.zip"
+      - "aws s3 cp Lambdafunction/function.zip s3://github-lambda-layer/function.zip"
       - "aws lambda update-function-code --function-name github-to-lambda-layers --s3-bucket github-lambda-layer --s3-key function.zip"
       - "aws lambda update-function-configuration --function-name github-to-lambda-layers --layers arn:aws:lambda:us-west-2:033914078355:layer:my-layer:$LAYER_VERSION"
 artifacts:
   files:
     - layer.zip
-    - function.zip
+    - Lambdafunction/function.zip
