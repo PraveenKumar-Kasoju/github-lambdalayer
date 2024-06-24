@@ -7,7 +7,9 @@ phases:
       - ls -al                   # List all files and directories in the root
       - ls -al Lambdafunction    # List all files and directories in Lambdafunction directory
       - cd Lambdafunction        # Change directory to Lambdafunction
-      - pip install -r requirements.txt -t .  # Install dependencies for Lambda function into current directory
+      - echo "requests" > requirements.txt  # Create requirements.txt with 'requests' library
+      - cat requirements.txt     # Output the contents of requirements.txt for verification
+      - pip install -r requirements.txt -t .  # Install dependencies from requirements.txt into current directory
       - zip -r function.zip .    # Create function.zip containing Lambda function code and dependencies
       - cd ..                    # Change back to the root directory
 
