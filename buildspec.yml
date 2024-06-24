@@ -15,14 +15,8 @@ phases:
     commands:
       - echo "Deploying Lambda function..."
       - aws s3 cp function.zip s3://github-lambda-layer/function.zip
-
-      # Download the layer
-      - aws lambda add-layer-version-permission --layer-name AWSSDKPandas-Python38 --version-number 20 --statement-id add-permission --principal '*' --action lambda:GetLayerVersion
-
-      # Update Lambda function configuration with the new layer
-      - aws lambda update-function-configuration --function-name github-to-lambda-layers --layers arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python38:20
-
-      # Update Lambda function code
+      - aws lambda add-layer-version-permission --layer-name LambdaInsightsExtension --version-number 53 --statement-id add-permission --principal '*' --action lambda:GetLayerVersion
+      - aws lambda update-function-configuration --function-name github-to-lambda-layers --layers arn:aws:lambda:us-east-1:033914078355:layer:LambdaInsightsExtension:53
       - aws lambda update-function-code --function-name github-to-lambda-layers --s3-bucket github-lambda-layer --s3-key function.zip
 
 artifacts:
