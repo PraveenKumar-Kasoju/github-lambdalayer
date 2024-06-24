@@ -25,7 +25,7 @@ phases:
       - echo "Layer version: $LAYER_VERSION"
       - aws s3 cp ../function.zip s3://github-lambda-layer/function.zip
       - aws lambda update-function-code --function-name github-to-lambda-layers --s3-bucket github-lambda-layer --s3-key function.zip
-      - aws lambda update-function-configuration --function-name github-to-lambda-layers --layers arn:aws:lambda:your-region:033914078355:layer:my-layer:$LAYER_VERSION
+      - aws lambda update-function-configuration --function-name github-to-lambda-layers --layers arn:aws:lambda:us-west-2:033914078355:layer:my-layer:$LAYER_VERSION
 artifacts:
   files:
     - layer.zip
