@@ -15,8 +15,23 @@ phases:
     commands:
       - echo "Deploying Lambda function..."
       - aws s3 cp function.zip s3://github-lambda-layer/function.zip
-      - aws lambda update-function-code --function-name github-to-lambda-layers --s3-bucket github-lambda-layer --s3-key function.zip
-      - aws lambda update-function-configuration --function-name github-to-lambda-layers --layers arn:aws:lambda:us-east-1:033914078355:layer:my-layer:1
+      - retry_count=0
+      - max_retries=3
+      - while [ $retry_count -lt $max_retries ]; do
+          aws lambda update-function-code --function-name github-to-lambda-layers --s3-bucket github-lambda-layer --s3-key function.zip && break || {
+            echo "Retry attempt $((retry_count+1)) failed. Retrying in 30 seconds...";
+            sleep 30;
+            retry_count=$((retry_count+1));
+          };
+        done
+      - retry_count=0
+      - while [ $retry_count -lt $max_retries ]; do
+          aws lambda update-function-configuration --function-name github-to-lambda-layers --layers arn:aws:lambda:us-east-1:033914078355:layer:my-layer:1 && break || {
+            echo "Retry attempt $((retry_count+1)) failed. Retrying in 30 seconds...";
+            sleep 30;
+            retry_count=$((retry_count+1));
+          };
+        done
 
 artifacts:
   files:
