@@ -1,24 +1,20 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      python: 3.8
   pre_build:
     commands:
-      - echo Preparing to build
-      - ls -al                   # List all files and directories in the root
-      - ls -al Lambdafunction    # List all files and directories in Lambdafunction directory
-      - cd Lambdafunction        # Change directory to Lambdafunction
-      - echo "requests" > requirements.txt  # Create requirements.txt with 'requests' library
-      - cat requirements.txt     # Output the contents of requirements.txt for verification
-      - pip install -r requirements.txt -t .  # Install dependencies from requirements.txt into current directory
-      - zip -r function.zip .    # Create function.zip containing Lambda function code and dependencies
-      - cd ..                    # Change back to the root directory
-
+      - echo "Installing dependencies..."
+      - pip install requests -t .
+      - zip -r function.zip .
+      - aws s3 cp function.zip s3://your-s3-bucket/function.zip
   build:
     commands:
-      - echo Building the Lambda function
-      - aws s3 cp Lambdafunction/function.zip s3://github-lambda-layer/function.zip  # Upload function.zip to S3 bucket
-      - aws lambda update-function-code --function-name github-to-lambda-layers --s3-bucket github-lambda-layer --s3-key function.zip  # Update Lambda function code
-
+      - echo "Deploying Lambda function..."
+      - aws lambda update-function-code --function-name github-to-lambda-layers --s3-bucket your-s3-bucket --s3-key function.zip
+      - aws lambda update-function-configuration --function-name github-to-lambda-layers --layers arn:aws:lambda:us-east-1:123456789012:layer:my-layer:1
 artifacts:
   files:
-    - Lambdafunction/function.zip
+    - function.zip
